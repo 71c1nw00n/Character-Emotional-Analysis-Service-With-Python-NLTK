@@ -1,8 +1,13 @@
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.chunk import conlltags2tree, tree2conlltags
+from nltk import pos_tag, ne_chunk
 class Character:
-    def __init__(self):
-        self.first_name = None
-        self.middle_name = None
-        self.last_name = None
+    def __init__(self, name):
+        self.first_name = name.split()[0] or None
+        self.middle_name = name.split()[1] if name.split()[2] else None
+        self.last_name = name.split()[2] if self.middle_name else name.split()[1] or None
         self.emotion_list = []
     
     def __add__(self, other):
@@ -24,28 +29,62 @@ class Character:
 class CharacterAnalyzer:
     def __init__(self):
         self.characters = []
-        self.stop_words = set(stopwords.words('english'))  # 영어 불용어 집합
+        self.stop_words = set(stopwords.words('english'))
+
+    def extract_characters(self, sent):
+        characters = []
+        tokens = word_tokenize(sent)
+        pos_tags = pos_tag(tokens)
+
+        # 1. NE Chunking
+        tree = ne_chunk(pos_tags)
+        iob_tags = tree2conlltags(tree)
+        for i, (token, pos, tag) in enumerate(iob_tags):
+            if tag == 'B-PERSON':  # PERSON으로 시작하는 경우
+                character = Character()
+                character.first_name = token
+                characters.append(character)
+
+        # 2. NER
+        ner_tags = nltk.ne_chunk(pos_tag(word_tokenize(sent)))
+        for subtree in ner_tags.subtrees():
+            if subtree.label() == 'PERSON':
+                for leaf in subtree.leaves():
+                    token = leaf[0]
+                    character = Character()
+                    character.first_name = token
+                    characters.append(character)
+
+        # 3. 이름 사전
+        for word in tokens:
+            if word.lower() in self.name_corpus:
+                character = Character()
+                character.first_name = word
+                characters.append(character)
+
+        return characters
 
     def analyze_characters(self, novel_sentences):
         for sentence in novel_sentences:
             words = word_tokenize(sentence)
             for word in words:
-                if word.lower() not in self.stop_words:  # 불용어 제외
-                    if word.endswith("."):
-                        word = word[:-1]  # 마침표 제거
-                    if word.endswith(","):
-                        word = word[:-1]  # 쉼표 제거
+                if word.lower() in self.stop_words: continue
 
-                    # 이름 추출: 단어가 대문자로 시작하고, 다음 단어가 대문자로 시작하거나 . 이면 이름으로 판단
-                    if word[0].isupper() and (words[words.index(word) + 1][0].isupper() or words[words.index(word) + 1] == "."):
-                        character_name = word
-                        found = False
-                        for character in self.characters:
-                            if character.first_name == character_name:
-                                found = True
-                                break
-                        if not found:
-                            character = Character()
-                            character.first_name = character_name
-                            self.characters.append(character)
+                if word.endswith("."):
+                    word = word[:-1] 
+                if word.endswith(","):
+                    word = word[:-1] 
+
+                if word[0].isupper() and (words[words.index(word) + 1][0].isupper() or words[words.index(word) + 1] == "."):
+                    character_name = word
+                    found = False
+                    for character in self.characters:
+                        if character.first_name == character_name:
+                            found = True
+                            break
+                    if not found:
+                        character = Character()
+                        character.first_name = character_name
+                        self.characters.append(character)
         return self.characters
+    
