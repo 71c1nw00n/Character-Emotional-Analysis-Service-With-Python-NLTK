@@ -5,9 +5,10 @@ from nltk.chunk import conlltags2tree, tree2conlltags
 from nltk import pos_tag, ne_chunk
 class Character:
     def __init__(self, name):
-        self.first_name = name.split()[0] or None
-        self.middle_name = name.split()[1] if name.split()[2] else None
-        self.last_name = name.split()[2] if self.middle_name else name.split()[1] or None
+        fullname = name.split()
+        self.first_name = fullname[0] or None
+        self.middle_name = fullname[1:-1] if len(fullname > 2) else None
+        self.last_name = fullname[-1] or None
         self.emotion_list = []
     
     def __add__(self, other):
