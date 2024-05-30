@@ -1,6 +1,6 @@
-import os
+import os, nltk
 from datetime import datetime
-from .. import emotion_analyzer as EA
+import emotion_analyizer
 
 def main():
     # 사용자 입력 처리
@@ -18,16 +18,16 @@ def main():
     filepath = os.path.join(user_directory, filename)
     
     # 텍스트 전처리
-    text_processor = EA.TextProcessor()
+    text_processor = emotion_analyizer.TextProcessor()
     processed_text = text_processor.preprocess(novel_text)
 
     # 감정 분석
-    emotion_detector = EA.EmotionDetector()
+    emotion_detector = emotion_analyizer.EmotionDetector()
     emotions = emotion_detector.detect_emotions(processed_text)
 
     # 등장인물 분석 및 감정 매칭
     characters = text_processor.extract_characters()
-    character_analyzer = EA.CharacterAnalyzer(characters)
+    character_analyzer = emotion_analyizer.CharacterAnalyzer(characters)
 
     for sentence, emotion in zip(processed_text, emotions):
         sentence_text = ' '.join(sentence)
