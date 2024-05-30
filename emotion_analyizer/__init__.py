@@ -3,14 +3,3 @@ from .emotion_detector import EmotionDetector
 from .text_processor import TextProcessor
 
 __all__ = ["CharacterAnalyzer", "EmotionDetector", "TextProcessor"]
-
-from enum import Enum
-class Emotion(Enum):
-    FEAR = "fear"
-    ANGER = "anger"
-    SADNESS = "sadness"
-    JOY = "joy"
-    ACCEPTANCE = "acceptance"
-    DISGUST = "disgust"
-    ANTICIPATION = "anticipation"
-    SURPRISE = "surprise"
