@@ -56,7 +56,10 @@ emotion_analyzer/
     ├── emotion_types.py           # Emotion types definition file
     ├── text_processor.py          # Text processing module
 tests/
-    ├── test_text_processor.py     # Text processing test file
+    ├── __init__.py                # Module initialization file
+    ├── manual_test.py             # Test system output with golden standard
+    ├── openai_api_test.py         # Test system output with silver standard
+    ├── test_utils.py              # Test each function's precision and recall
 LICENSE
 README.md
 main.py
@@ -64,7 +67,6 @@ main.py
 
 
 ## Contribution
-
 Contributions are welcome! To contribute to this project, please follow these steps:
 
 1. Fork the repository.
@@ -73,7 +75,8 @@ Contributions are welcome! To contribute to this project, please follow these st
 4. Push to the branch (git push origin feature/new-feature).
 5. Create a new Pull Request.
 
-
+## Further Development
+Furthermore, if this project is deployed on a web server, it can provide real-time novel analysis for authors, enhancing their productivity.
 
 ## License
 This project is licensed under the MIT License. See the LICENSE file for details.
