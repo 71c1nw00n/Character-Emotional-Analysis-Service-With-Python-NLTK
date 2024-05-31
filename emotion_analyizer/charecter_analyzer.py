@@ -3,8 +3,17 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.chunk import conlltags2tree, tree2conlltags
 from nltk import pos_tag, ne_chunk
-from . import emotion_types
-class Character(emotion_types.Emotion):
+from collections import defaultdict
+
+class Sentiment():
+    def __init__(self):
+        self.emotions = defaultdict(list)
+
+    def append(self, type, offset):
+        if type in ['fear', 'anger', 'sadness', 'joy', 'acceptance', 'disgust', 'anticipation', 'surprise']:
+            self.emotions[type].append(offset)
+        else: raise ValueError(f"Emotion type '{type}' is not recognized")
+class Character(Sentiment):
     def __init__(self, name):
         super().__init__()
         fullname = name.split()
@@ -58,7 +67,6 @@ class CharacterAnalyzer:
 
         # 2. NER
         # fullname = [leaf[0] for subtree in ner_tags.subtress() if subtree.label() == 'PERSON' for leaf in subtree.leaves()]
-        
         # if fullname:
         #     character = Character(' '.join(fullname))
         #     characters.append(character)
