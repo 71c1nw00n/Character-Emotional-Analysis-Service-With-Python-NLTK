@@ -3,29 +3,39 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.chunk import conlltags2tree, tree2conlltags
 from nltk import pos_tag, ne_chunk
-class Character:
+from . import emotion_types
+class Character(emotion_types.Emotion):
     def __init__(self, name):
+        super().__init__()
         fullname = name.split()
-        self.first_name = fullname[0] or None
-        self.middle_name = fullname[1:-1] if len(fullname > 2) else None
-        self.last_name = fullname[-1] or None
-        self.emotion_list = []
+        self.first_name = fullname[0]       if len(fullname > 0) else None
+        self.middle_name = fullname[1:-1]   if len(fullname > 2) else None
+        self.last_name = fullname[-1]       if len(fullname > 1) else None
     
     def __add__(self, other):
-        c = Character()
+        if not isinstance(other, Character):
+            return NotImplemented
+        
+        new_name = ' '.join(filter(None, [
+            self.first_name or other.first_name,
+            ' '.join(self.middle_name or other.middle_name or []),
+            self.last_name or other.last_name
+        ]))
 
-        c.first_name = self.first_name or other.first_name
-        c.middle_name = self.middle_name or other.middle_name
-        c.last_name = self.last_name or other.last_name
+        c = Character(new_name)
 
-        c.emotion_list = self.emotion_list + other.emotion_list
-        c.emotion_list.sort()
+        for emotion_type, offsets in self.emotions.items():
+            c.emotions[emotion_type].extend(offsets)
+        for emotion_type, offsets in other.emotions.items():
+            c.emotions[emotion_type].extend(offsets)
+        
+        for emotion_list in c.emotions.values():
+            emotion_list.sort()
 
-        c.emotion_list.sort(key=lambda x: x[1])
         return c
     
     def append(self, emotion, offset):
-        self.emotion_list.append((emotion, offset))
+        super().append(emotion, offset)
 
 class CharacterAnalyzer:
     def __init__(self):
@@ -36,10 +46,10 @@ class CharacterAnalyzer:
         characters = []
         tokens = word_tokenize(sent)
         pos_tags = pos_tag(tokens)
+        ner_tags = ne_chunk(pos_tags)
 
         # 1. NE Chunking
-        tree = ne_chunk(pos_tags)
-        iob_tags = tree2conlltags(tree)
+        iob_tags = tree2conlltags(ner_tags)
         for i, (token, pos, tag) in enumerate(iob_tags):
             if tag == 'B-PERSON':  # PERSON으로 시작하는 경우
                 character = Character()
@@ -47,14 +57,20 @@ class CharacterAnalyzer:
                 characters.append(character)
 
         # 2. NER
-        ner_tags = nltk.ne_chunk(pos_tag(word_tokenize(sent)))
-        for subtree in ner_tags.subtrees():
-            if subtree.label() == 'PERSON':
-                for leaf in subtree.leaves():
-                    token = leaf[0]
-                    character = Character()
-                    character.first_name = token
-                    characters.append(character)
+        # fullname = [leaf[0] for subtree in ner_tags.subtress() if subtree.label() == 'PERSON' for leaf in subtree.leaves()]
+        
+        # if fullname:
+        #     character = Character(' '.join(fullname))
+        #     characters.append(character)
+
+        # for subtree in ner_tags.subtrees():
+        #     if subtree.label() == 'PERSON':
+        #         fullname = []
+        #         for leaf in subtree.leaves():
+        #             fullname.append(leaf[0])
+        #         character = Character(' '.join(fullname))
+        #         characters.append(character)
+                
 
         # 3. 이름 사전
         for word in tokens:

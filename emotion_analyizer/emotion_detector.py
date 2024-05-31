@@ -5,11 +5,8 @@ class EmotionDetector:
         # 감정 분석 모델 초기화 (예: VADER)
         self.analyzer = SentimentIntensityAnalyzer()
 
-    def detect_emotions(self, processed_text):
-        emotions = []
-        for sentence in processed_text:
-            # 문장별 감정 분석
-            scores = self.analyzer.polarity_scores(' '.join(sentence))
-            # ... (감정 레이블 결정 로직 구현)
-            emotions.append(emotion_label)
-        return emotions
+    def detect_emotion(self, sentence):
+        for word in sentence.split():
+            if word in emotion_types.Emotion:
+                return word
+        return None  # 감정이 발견되지 않으면 None 반환
