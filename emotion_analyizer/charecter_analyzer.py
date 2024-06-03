@@ -42,10 +42,11 @@ class Character(Sentiment):
 
         c = Character(new_name)
 
-        for emotion_type, offsets in self.emotions.items():
-            c.emotions[emotion_type].extend(offsets)
-        for emotion_type, offsets in other.emotions.items():
-            c.emotions[emotion_type].extend(offsets)
+        for emotion_type, offset in self.emotions.items():
+            c.append(emotion_type, offset)
+
+        for emotion_type, offset in other.emotions.items():
+            c.append(emotion_type, offset)
         
         for emotion_list in c.emotions.values():
             emotion_list.sort()
@@ -53,12 +54,7 @@ class Character(Sentiment):
         return c
     
     def __str__(self):
-        return self.first_name + self.middle_name + self.last_name
-    
-    def show(self, option):
-        if option == 'emotion':
-            ret = 
-        return self.first_name + self.middle_name + self.last_name
+        return ' '.join([self.first_name, self.middle_name, self.last_name])
     
     def append(self, emotion, offset) -> None:
         super().append(emotion, offset)
@@ -133,6 +129,16 @@ class CharacterAnalyzer:
 
 if __name__ == "__main__":
     my_character = Character("park seung monkey D luffy jun")
-    print(my_character.first_name)
-    print(my_character.middle_name)
-    print(my_character.last_name)
+
+    print(my_character.constructed_name)
+    print(my_character.emotions)
+    print(my_character)
+
+    my_character.append('joy', 3)
+    print(my_character.emotions)
+
+    my_second = Character("park jun")
+    my_second.append('fear', 6)
+    merged_character = my_character + my_second
+
+    print(merged_character.emotions)
