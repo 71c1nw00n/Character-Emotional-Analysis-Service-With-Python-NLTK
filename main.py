@@ -1,17 +1,15 @@
-import os, nltk
+import os, nltk, tests.test_utils as test_utils
 from datetime import datetime
 from emotion_analyizer import CharacterAnalyzer, EmotionDetector
 
-def main():
+def main(user_id='', novel_title='', novel_text=''):
     # 사용자 입력 처리
-    # user_id = input("User ID를 입력하세요: ")
-    # novel_title = input("소설 제목을 입력하세요: ")
-    # novel_text = input("소설 텍스트를 입력하세요: ")
-    user_id = 'park'
-    novel_title = 'today'
-    novel_text = """Harry felt a chill run down my spine as I walked through the dark alley.
-    Tom was absolutely furious with how I was treated at the store.
-    Coby was stunned by the unexpected turn of events in the story."""
+    if not user_id:
+        user_id = input("User ID를 입력하세요: ")
+    if not novel_title:
+        novel_title = input("소설 제목을 입력하세요: ")
+    if not novel_text:
+        novel_text = input("소설 텍스트를 입력하세요: ")
 
     # 디렉토리 생성
     user_directory = os.path.join("output", user_id)
