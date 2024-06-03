@@ -1,0 +1,15 @@
+Character1: Park
+Character2: Seung Jun
+Character3: Park
+Character4: Seung Jun
+Character5: Park
+Character6: Seung Jun
+Offset: 0	Emotions: anticipation
+Offset: 1	Emotions: anger
+Offset: 2	Emotions: surprise
+resolve: Park -> defaultdict(<class 'list'>, {})
+resolve: Seung Jun -> defaultdict(<class 'list'>, {})
+resolve: Park -> defaultdict(<class 'list'>, {})
+resolve: Seung Jun -> defaultdict(<class 'list'>, {})
+resolve: Park -> defaultdict(<class 'list'>, {})
+resolve: Seung Jun -> defaultdict(<class 'list'>, {})

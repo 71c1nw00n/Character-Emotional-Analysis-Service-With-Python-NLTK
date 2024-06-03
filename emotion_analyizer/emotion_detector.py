@@ -37,7 +37,7 @@ class EmotionDetector:
         'surprise': ['surprised', 'astonished', 'amazed', 'shocked', 'stunned', 'startled', 'flabbergasted', 'baffled', 'dumbfounded', 'taken aback']
         }
         words = word_tokenize(sentence.lower())
-        filtered_words=[word for word in words if words not in self.stopwords]
+        filtered_words=[word for word in words if word.isalpha() and word not in self.stopwords and word in nltk.corpus.words.words()]
         
 
         emotion_score = defaultdict(int)
@@ -52,7 +52,7 @@ class EmotionDetector:
     
     def find_path_similarity(self, sentence):
         words = word_tokenize(sentence.lower())
-        filtered_words=[word for word in words if word.isalpha() and word not in self.stopwords]
+        filtered_words=[word for word in words if word.isalpha() and word not in self.stopwords and word in nltk.corpus.words.words()]
         
         emotion_synsets={}
         for emotion in self.emotion_type: emotion_synsets[emotion]=wordnet.synsets(emotion)
@@ -65,7 +65,7 @@ class EmotionDetector:
         max_similarities=defaultdict(dict)
         for word, tag in tagged_words:
             #print(word, tag)
-            word_synsets=wordnet.synsets(word, pos=str(self.penn_to_wn(tag))) #[Synset('happy.a.01'), Synset('felicitous.s.02'), Synset('glad.s.02'), Synset('happy.s.04')]
+            word_synsets=wordnet.synsets(word, pos=self.penn_to_wn(tag)) #[Synset('happy.a.01'), Synset('felicitous.s.02'), Synset('glad.s.02'), Synset('happy.s.04')]
             #print(word_synsets)
             
             for emotion in self.emotion_type:

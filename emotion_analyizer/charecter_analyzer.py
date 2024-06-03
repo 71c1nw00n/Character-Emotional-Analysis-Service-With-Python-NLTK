@@ -52,7 +52,7 @@ class Character(Sentiment):
         return c
     
     def __str__(self) -> str:
-        return ' '.join([self.first_name, self.middle_name, self.last_name])
+        return ' '.join(filter(None,[self.first_name, self.middle_name, self.last_name]))
     
     def append(self, emotion, offset) -> None:
         super().append(emotion, offset)
