@@ -1,4 +1,4 @@
-import nltk
+from transformers import pipeline
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.chunk import conlltags2tree, tree2conlltags
@@ -43,16 +43,13 @@ class Character(Sentiment):
         ]))
 
         c = Character(new_name)
-
         for emotion_type, offset in self.emotions.items():
             c.append(emotion_type, offset)
 
         for emotion_type, offset in other.emotions.items():
             c.append(emotion_type, offset)
         
-        for emotion_list in c.emotions.values():
-            emotion_list.sort()
-
+        c.sort()
         return c
     
     def __str__(self) -> str:
@@ -61,53 +58,49 @@ class Character(Sentiment):
     def append(self, emotion, offset) -> None:
         super().append(emotion, offset)
 
+    def sort(self) -> None:
+        for emotion_list in self.emotions.values():
+            emotion_list.sort()
+
 class CharacterAnalyzer:
+    def __init__(self, novel_sents):
+        self.sents = novel_sents
+        self.character_list(novel_sents)
+        self.stop_words = set(stopwords.words('english'))
+
+    def character_list(self, novel_sents):
+        self.characters = []
+        for sent in novel_sents:
+            self.extract_characters(sent)
+
     def extract_characters(self, sent):
-        characters = []
         tokens = word_tokenize(sent)
         pos_tags = pos_tag(tokens)
         ner_tags = ne_chunk(pos_tags)
-
-        # 1. NE Chunking
         iob_tags = tree2conlltags(ner_tags)
-        for i, (token, pos, tag) in enumerate(iob_tags):
+
+        current_character_tokens = []
+        for token, pos, tag in iob_tags:
             if tag == 'B-PERSON':  # PERSON으로 시작하는 경우
-                character = Character()
-                character.first_name = token
-                characters.append(character)
+                self.token_to_char(current_character_tokens)  # 이전에 저장된 이름이 있으면 처리 # 이름이 연달아 나오는 경우를 커버
+                current_character_tokens = [token]
+            elif tag == 'I-PERSON':  # PERSON 이름의 일부분인 경우
+                current_character_tokens.append(token)
+            else:
+                self.token_to_char(current_character_tokens)  # 사람이름이 끝난 경우 처리
+                current_character_tokens = []
 
-        # 2. NER
-        # fullname = [leaf[0] for subtree in ner_tags.subtress() if subtree.label() == 'PERSON' for leaf in subtree.leaves()]
-        # if fullname:
-        #     character = Character(' '.join(fullname))
-        #     characters.append(character)
+        # 문장 마지막이 이름으로 끝난 경우 잔여 토큰 처리
+        self.token_to_char(current_character_tokens)
 
-        # for subtree in ner_tags.subtrees():
-        #     if subtree.label() == 'PERSON':
-        #         fullname = []
-        #         for leaf in subtree.leaves():
-        #             fullname.append(leaf[0])
-        #         character = Character(' '.join(fullname))
-        #         characters.append(character)
-                
+    def token_to_char(self, name_token):
+        if name_token:
+            full_name = ' '.join(name_token)
+            character = Character(full_name)
+            self.characters.append(character)
 
-        # 3. 이름 사전
-        for word in tokens:
-            if word.lower() in self.name_corpus:
-                character = Character()
-                character.first_name = word
-                characters.append(character)
-
-        return characters
-    
     def update_character_emotion(self, character, emotion, offset):
-        return
-    
-    def __init__(self, novel_sents):
-        self.sents = novel_sents
-        self.characters = extract_
-        self.stop_words = set(stopwords.words('english'))
-
+        character.append(emotion, offset)
 
 if __name__ == "__main__":
     my_character = Character("park seung monkey D luffy jun")
