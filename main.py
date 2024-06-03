@@ -9,9 +9,9 @@ def main():
     # novel_text = input("소설 텍스트를 입력하세요: ")
     user_id = 'park'
     novel_title = 'today'
-    novel_text = """Harry Poter felt a chill run down my spine as I walked through the dark alley.
-    Harry Poter was absolutely furious with how I was treated at the store.
-    Harry Poter was stunned by the unexpected turn of events in the story."""
+    novel_text = """Harry felt a chill run down my spine as I walked through the dark alley.
+    Tom was absolutely furious with how I was treated at the store.
+    Coby was stunned by the unexpected turn of events in the story."""
 
     # 디렉토리 생성
     user_directory = os.path.join("output", user_id)

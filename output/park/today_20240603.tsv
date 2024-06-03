@@ -1,15 +1,9 @@
-Character1: Park
-Character2: Seung Jun
-Character3: Park
-Character4: Seung Jun
-Character5: Park
-Character6: Seung Jun
+Character1: Harry
+Character2: Tom
+Character3: Coby
 Offset: 0	Emotions: anticipation
 Offset: 1	Emotions: anger
 Offset: 2	Emotions: surprise
-resolve: Park -> defaultdict(<class 'list'>, {})
-resolve: Seung Jun -> defaultdict(<class 'list'>, {})
-resolve: Park -> defaultdict(<class 'list'>, {})
-resolve: Seung Jun -> defaultdict(<class 'list'>, {})
-resolve: Park -> defaultdict(<class 'list'>, {})
-resolve: Seung Jun -> defaultdict(<class 'list'>, {})
+resolve: Harry -> defaultdict(<class 'list'>, {'anticipation': [0]})
+resolve: Tom -> defaultdict(<class 'list'>, {'anger': [1]})
+resolve: Coby -> defaultdict(<class 'list'>, {'surprise': [2]})

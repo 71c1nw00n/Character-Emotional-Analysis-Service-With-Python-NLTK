@@ -100,8 +100,8 @@ class CharacterAnalyzer:
 
     def resolve_emotion_coref(self, characters, emotion, offset):
         for char in characters:
-            name = char.constructed_name
-            if name in self.sents[max(offset-1,0):min(offset+1, len(self.sents))]:
+            name = char.first_name
+            if name in self.sents[offset]:
                 char.append(emotion, offset)
 
 if __name__ == "__main__":
