@@ -13,13 +13,22 @@ class Sentiment():
         if type in ['fear', 'anger', 'sadness', 'joy', 'acceptance', 'disgust', 'anticipation', 'surprise']:
             self.emotions[type].append(offset)
         else: raise ValueError(f"Emotion type '{type}' is not recognized")
+
 class Character(Sentiment):
     def __init__(self, name):
         super().__init__()
-        fullname = name.split()
-        self.first_name = fullname[0]       if len(fullname > 0) else None
-        self.middle_name = fullname[1:-1]   if len(fullname > 2) else None
-        self.last_name = fullname[-1]       if len(fullname > 1) else None
+        self.constructed_name = name
+
+        if isinstance(name, str):
+            fullname = name.split()
+        elif isinstance(name, list):
+            fullname = name
+        else:
+            raise ValueError(f"Character Name '{fullname}' is not list or str")
+        
+        self.first_name = fullname[0]               if len(fullname) > 0 else None
+        self.middle_name = ' '.join(fullname[1:-1])  if len(fullname) > 2 else None
+        self.last_name = fullname[-1]               if len(fullname) > 1 else None
     
     def __add__(self, other):
         if not isinstance(other, Character):
@@ -27,7 +36,7 @@ class Character(Sentiment):
         
         new_name = ' '.join(filter(None, [
             self.first_name or other.first_name,
-            ' '.join(self.middle_name or other.middle_name or []),
+            self.middle_name or other.middle_name,
             self.last_name or other.last_name
         ]))
 
@@ -43,7 +52,15 @@ class Character(Sentiment):
 
         return c
     
-    def append(self, emotion, offset):
+    def __str__(self):
+        return self.first_name + self.middle_name + self.last_name
+    
+    def show(self, option):
+        if option == 'emotion':
+            ret = 
+        return self.first_name + self.middle_name + self.last_name
+    
+    def append(self, emotion, offset) -> None:
         super().append(emotion, offset)
 
 class CharacterAnalyzer:
@@ -113,3 +130,9 @@ class CharacterAnalyzer:
                         self.characters.append(character)
         return self.characters
     
+
+if __name__ == "__main__":
+    my_character = Character("park seung monkey D luffy jun")
+    print(my_character.first_name)
+    print(my_character.middle_name)
+    print(my_character.last_name)
