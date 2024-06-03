@@ -1,6 +1,6 @@
 import os, nltk
 from datetime import datetime
-import emotion_analyizer
+from emotion_analyizer import CharacterAnalyzer, EmotionDetector
 
 def main():
     # 사용자 입력 처리
@@ -17,30 +17,25 @@ def main():
     filename = f"{novel_title}_{current_date}.tsv"
     filepath = os.path.join(user_directory, filename)
 
-    # 텍스트 전처리
-    text_processor = emotion_analyizer.TextProcessor()
-    novel_sentences = text_processor.preprocess(novel_text)  # 문장 단위로 분리
-
     # 등장인물 분석
-    character_analyzer = emotion_analyizer.CharacterAnalyzer(novel_sentences)
-    characters = text_processor.extract_characters()
+    novel_sentences = nltk.sent_tokenize(novel_text)
+    character_analyzer = CharacterAnalyzer(novel_sentences)
+    characters = [character_analyzer.extract_characters(sent) for sent in novel_sentences if character_analyzer.extract_characters(sent)]
 
     # 감정 분석 및 캐릭터 매칭
-    emotion_detector = emotion_analyizer.EmotionDetector()
-    for sentence in novel_sentences:
-        # 감정 분석
-        emotion = emotion_detector.detect_emotion(sentence)  # 문장 단위 감정 분석
+    emotion_detector = EmotionDetector()
+    for offset, sentence in enumerate(novel_sentences):
+        emotion = emotion_detector.detect_emotion(sentence)
 
-        # 감정이 존재하면 등장인물과 연결
         if emotion:
             for character in characters:
                 if character in sentence:
-                    character_analyzer.update_character_emotion(character, emotion)
+                    character_analyzer.update_character_emotion(character, emotion, offset)
 
     # 결과를 TSV 파일로 저장
     character_emotions = character_analyzer.get_character_emotions()
     with open(filepath, 'w', encoding='utf-8') as file:
-        file.write("Character\tEmotions\n")
+        file.write(f"Character\tEmotions\n")
         for character_name, emotions in character_emotions.items():
             file.write(f"{character_name}\t{','.join(emotions)}\n")
 

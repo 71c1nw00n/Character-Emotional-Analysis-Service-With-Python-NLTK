@@ -18,7 +18,9 @@ class Character(Sentiment):
     def __init__(self, name):
         super().__init__()
         self.constructed_name = name
+        self.set_name(name)
 
+    def set_name(self, name):
         if isinstance(name, str):
             fullname = name.split()
         elif isinstance(name, list):
@@ -53,17 +55,13 @@ class Character(Sentiment):
 
         return c
     
-    def __str__(self):
+    def __str__(self) -> str:
         return ' '.join([self.first_name, self.middle_name, self.last_name])
     
     def append(self, emotion, offset) -> None:
         super().append(emotion, offset)
 
 class CharacterAnalyzer:
-    def __init__(self):
-        self.characters = []
-        self.stop_words = set(stopwords.words('english'))
-
     def extract_characters(self, sent):
         characters = []
         tokens = word_tokenize(sent)
@@ -101,31 +99,15 @@ class CharacterAnalyzer:
                 characters.append(character)
 
         return characters
-
-    def analyze_characters(self, novel_sentences):
-        for sentence in novel_sentences:
-            words = word_tokenize(sentence)
-            for word in words:
-                if word.lower() in self.stop_words: continue
-
-                if word.endswith("."):
-                    word = word[:-1] 
-                if word.endswith(","):
-                    word = word[:-1] 
-
-                if word[0].isupper() and (words[words.index(word) + 1][0].isupper() or words[words.index(word) + 1] == "."):
-                    character_name = word
-                    found = False
-                    for character in self.characters:
-                        if character.first_name == character_name:
-                            found = True
-                            break
-                    if not found:
-                        character = Character()
-                        character.first_name = character_name
-                        self.characters.append(character)
-        return self.characters
     
+    def update_character_emotion(self, character, emotion, offset):
+        return
+    
+    def __init__(self, novel_sents):
+        self.sents = novel_sents
+        self.characters = extract_
+        self.stop_words = set(stopwords.words('english'))
+
 
 if __name__ == "__main__":
     my_character = Character("park seung monkey D luffy jun")
