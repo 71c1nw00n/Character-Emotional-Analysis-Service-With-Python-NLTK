@@ -1,4 +1,3 @@
-from transformers import pipeline
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.chunk import conlltags2tree, tree2conlltags
@@ -99,8 +98,11 @@ class CharacterAnalyzer:
             character = Character(full_name)
             self.characters.append(character)
 
-    def update_character_emotion(self, character, emotion, offset):
-        character.append(emotion, offset)
+    def resolve_emotion_coref(self, characters, emotion, offset):
+        for char in characters:
+            name = char.constructed_name
+            if name in self.sents[max(offset-1,0):min(offset+1, len(self.sents))]:
+                char.append(emotion, offset)
 
 if __name__ == "__main__":
     my_character = Character("park seung monkey D luffy jun")

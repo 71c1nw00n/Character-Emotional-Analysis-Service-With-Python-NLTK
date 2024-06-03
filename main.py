@@ -20,24 +20,21 @@ def main():
     # 등장인물 분석
     novel_sentences = nltk.sent_tokenize(novel_text)
     character_analyzer = CharacterAnalyzer(novel_sentences)
-    characters = [character_analyzer.extract_characters(sent) for sent in novel_sentences if character_analyzer.extract_characters(sent)]
+    characters = character_analyzer.characters
 
     # 감정 분석 및 캐릭터 매칭
     emotion_detector = EmotionDetector()
     for offset, sentence in enumerate(novel_sentences):
-        emotion = emotion_detector.detect_emotion(sentence)
+        emotion = emotion_detector.detect_emotion(sentence[0])
 
         if emotion:
-            for character in characters:
-                if character in sentence:
-                    character_analyzer.update_character_emotion(character, emotion, offset)
+            character_analyzer.resolve_emotion_coref(characters, emotion, offset)
 
     # 결과를 TSV 파일로 저장
-    character_emotions = character_analyzer.get_character_emotions()
     with open(filepath, 'w', encoding='utf-8') as file:
-        file.write(f"Character\tEmotions\n")
-        for character_name, emotions in character_emotions.items():
-            file.write(f"{character_name}\t{','.join(emotions)}\n")
+        for char_num, character in enumerate(characters, start=1):
+            file.write(f"Character{char_num}: {character.constructed_name}\n")
+            file.write(f"{character.emotions}\n")
 
     print(f"결과가 {filepath}에 저장되었습니다.")
 
