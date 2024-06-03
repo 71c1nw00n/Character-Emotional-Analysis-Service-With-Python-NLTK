@@ -59,7 +59,6 @@ class EmotionDetector:
         
         emotion_synsets={}
         for emotion in self.emotion_type: emotion_synsets[emotion]=wordnet.synsets(emotion)
-        lemmatizer = WordNetLemmatizer()
         
         #NLTK 기반 품사 태깅 문장 추출 
         tagged_words = pos_tag(filtered_words)
