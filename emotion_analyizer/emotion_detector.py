@@ -1,13 +1,10 @@
 import nltk
 #from . import emotion_types
 from nltk.corpus import wordnet
-from nltk.corpus import sentiwordnet as swn
-from nltk import word_tokenize, sent_tokenize, pos_tag
-from nltk.stem import WordNetLemmatizer
+from nltk import word_tokenize, pos_tag
 from nltk.tokenize import word_tokenize
 from collections import defaultdict
 from nltk.sentiment import SentimentIntensityAnalyzer
-import pandas as pd
 
 
 class EmotionDetector:
