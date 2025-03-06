@@ -1,4 +1,6 @@
 # Character Emotional Analysis Service With Python NLTK
+[Final Report](https://github.com/71c1nw00n/Character-Emotional-Analysis-Service-With-Python-NLTK/blob/main/Final%20Report_Character%20Emotional%20Analysis%20Service%20with%20Python%20NLTK.pdf)
+[Final Presentation](https://github.com/71c1nw00n/Character-Emotional-Analysis-Service-With-Python-NLTK/blob/main/Final%20presentation_NLTK.pptx)
 
 ## Project Introduction
 
